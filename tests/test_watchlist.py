@@ -111,6 +111,24 @@ def test_add_to_watchlist_nonexistent_film_raises(app, sample_user):
             add_to_watchlist(user_id=sample_user, film_id=fake_film_id)
 
 
+# ── Visibility toggle (stretch: public parameter) ────────────────────────────
+
+def test_add_to_watchlist_defaults_public(app, sample_user, sample_film):
+    """Without an explicit flag, entries default to public=True."""
+    with app.app_context():
+        entry = add_to_watchlist(user_id=sample_user, film_id=sample_film)
+        assert entry.public is True
+
+
+def test_add_to_watchlist_respects_public_false(app, sample_user, sample_film):
+    """Passing public=False creates a private entry."""
+    with app.app_context():
+        entry = add_to_watchlist(
+            user_id=sample_user, film_id=sample_film, public=False
+        )
+        assert entry.public is False
+
+
 # ── Removal (stretch: remove_from_watchlist) ─────────────────────────────────
 
 def test_remove_from_watchlist_deletes_entry(app, sample_user, sample_film):
